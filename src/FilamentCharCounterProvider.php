@@ -2,15 +2,15 @@
 
 namespace Wiebenieuwenhuis\FilamentCharCounter;
 
-use Filament\PluginServiceProvider;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class FilamentCharCounterProvider extends PluginServiceProvider
+class FilamentRadioButtonFieldServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'filament-char-counter';
-
     public function configurePackage(Package $package): void
     {
-        $package->name(static::$name)->hasViews();
+        $package
+            ->name('filament-char-counter')
+            ->hasViews();
     }
 }
