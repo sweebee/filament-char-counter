@@ -1,5 +1,12 @@
 # Filament Char Counter
 
+## Installation
+```
+composer require wiebenieuwenhuis/filament-char-counter
+```
+
+## Usage
+
 Show a character counter in a text input or textarea.
 
 TextInput with a 55 max counter, you can exceed the 55 character limit, the counter will turn red.
