@@ -34,7 +34,7 @@
             </span>
         @endif
         <div class="flex-1 relative">
-            <div class="bg-white dark:bg-gray-700 absolute right-1 px-2 top-1 bottom-1 flex items-center text-sm" @if($getCharacterLimit()) :class="{'text-danger-500': characterCount > {{ $getCharacterLimit() }}}" @endif>
+            <div class="bg-white dark:bg-gray-700 absolute right-1 rtl:!left-1 rtl:!right-auto px-2 top-1 bottom-1 flex items-center text-sm" @if($getCharacterLimit()) :class="{'text-danger-500': characterCount > {{ $getCharacterLimit() }}}" @endif>
                 <span x-text="characterCount"></span>@if($getCharacterLimit())/{{ $getCharacterLimit() }}@endif
             </div>
             <input
