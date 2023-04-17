@@ -34,54 +34,59 @@
             </span>
         @endif
         <div class="flex-1 relative">
-            <div class="bg-white dark:bg-gray-700 absolute right-1 rtl:!left-1 rtl:!right-auto px-2 top-1 bottom-1 flex items-center text-sm" @if($getCharacterLimit()) :class="{'text-danger-500': characterCount > {{ $getCharacterLimit() }}}" @endif>
-                <span x-text="characterCount"></span>@if($getCharacterLimit())/{{ $getCharacterLimit() }}@endif
+            <div
+                    {{ $getExtraInputAttributeBag()->class([
+                            'border focus:ring-0 ring-0 overflow-hidden flex w-full bg-white dark:bg-gray-700 transition duration-75 rounded-lg shadow-sm focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70 ring-primary-500 focus-within:ring-1 focus-within:border-primary-500',
+                            'dark:bg-gray-700 dark:border-gray-600 dark:focus-within:border-primary-500' => config('forms.dark_mode'),
+                        ]) }}
+                    x-bind:class="{
+                        'border-gray-300': ! (@js($getStatePath()) in $wire.__instance.serverMemo.errors),
+                        'dark:border-gray-600 ': ! (@js($getStatePath()) in $wire.__instance.serverMemo.errors) && @js(config('forms.dark_mode')),
+                        'border-danger-600 ring-danger-600': (@js($getStatePath()) in $wire.__instance.serverMemo.errors),
+                        'dark:border-danger-400 dark:ring-danger-400': (@js($getStatePath()) in $wire.__instance.serverMemo.errors) && @js(config('forms.dark_mode')),
+                    }"
+
+            >
+                <input
+                        @keyup="characterCount = $event.target.value.length"
+                        @unless ($hasMask())
+                            x-data="{}"
+                {{ $applyStateBindingModifiers('wire:model') }}="{{ $getStatePath() }}"
+                type="{{ $getType() }}"
+                @else
+                    x-data="textInputFormComponent({
+                            {{ $hasMask() ? "getMaskOptionsUsing: (IMask) => ({$getJsonMaskConfiguration()})," : null }}
+                    state: $wire.{{ $applyStateBindingModifiers('entangle(\'' . $getStatePath() . '\')', lazilyEntangledModifiers: ['defer']) }},
+                        })"
+                    type="text"
+                    wire:ignore
+                    {!! $isLazy() ? "x-on:blur=\"\$wire.\$refresh\"" : null !!}
+                    {!! $isDebounced() ? "x-on:input.debounce.{$getDebounce()}=\"\$wire.\$refresh\"" : null !!}
+                    {{ $getExtraAlpineAttributeBag() }}
+                @endunless
+                dusk="filament.forms.{{ $getStatePath() }}"
+                {!! ($autocapitalize = $getAutocapitalize()) ? "autocapitalize=\"{$autocapitalize}\"" : null !!}
+                {!! ($autocomplete = $getAutocomplete()) ? "autocomplete=\"{$autocomplete}\"" : null !!}
+                {!! $isAutofocused() ? 'autofocus' : null !!}
+                {!! $isDisabled() ? 'disabled' : null !!}
+                id="{{ $getId() }}"
+                {!! ($inputMode = $getInputMode()) ? "inputmode=\"{$inputMode}\"" : null !!}
+                {!! $datalistOptions ? "list=\"{$getId()}-list\"" : null !!}
+                {!! ($placeholder = $getPlaceholder()) ? "placeholder=\"{$placeholder}\"" : null !!}
+                {!! ($interval = $getStep()) ? "step=\"{$interval}\"" : null !!}
+                @if (! $isConcealed())
+                    {!! filled($length = $getMaxLength()) ? "maxlength=\"{$length}\"" : null !!}
+                    {!! filled($value = $getMaxValue()) ? "max=\"{$value}\"" : null !!}
+                    {!! filled($length = $getMinLength()) ? "minlength=\"{$length}\"" : null !!}
+                    {!! filled($value = $getMinValue()) ? "min=\"{$value}\"" : null !!}
+                    {!! $isRequired() ? 'required' : null !!}
+                @endif
+                class="appearance-none bg-transparent w-full border-0 disabled:opacity-70 focus:ring-0 focus:!outline-none focus:!shadow-none ltr:!pr-0 rtl:!pl-0"
+                />
+                    <div class="flex items-center text-sm px-2" @if($getCharacterLimit()) :class="{'text-danger-500': characterCount > {{ $getCharacterLimit() }}}" @endif>
+                    <span x-text="characterCount"></span>@if($getCharacterLimit())/{{ $getCharacterLimit() }}@endif
+                </div>
             </div>
-            <input
-                    @keyup="characterCount = $event.target.value.length"
-                    @unless ($hasMask())
-                        x-data="{}"
-            {{ $applyStateBindingModifiers('wire:model') }}="{{ $getStatePath() }}"
-            type="{{ $getType() }}"
-            @else
-                x-data="textInputFormComponent({
-                        {{ $hasMask() ? "getMaskOptionsUsing: (IMask) => ({$getJsonMaskConfiguration()})," : null }}
-                state: $wire.{{ $applyStateBindingModifiers('entangle(\'' . $getStatePath() . '\')', lazilyEntangledModifiers: ['defer']) }},
-                    })"
-                type="text"
-                wire:ignore
-                {!! $isLazy() ? "x-on:blur=\"\$wire.\$refresh\"" : null !!}
-                {!! $isDebounced() ? "x-on:input.debounce.{$getDebounce()}=\"\$wire.\$refresh\"" : null !!}
-                {{ $getExtraAlpineAttributeBag() }}
-            @endunless
-            dusk="filament.forms.{{ $getStatePath() }}"
-            {!! ($autocapitalize = $getAutocapitalize()) ? "autocapitalize=\"{$autocapitalize}\"" : null !!}
-            {!! ($autocomplete = $getAutocomplete()) ? "autocomplete=\"{$autocomplete}\"" : null !!}
-            {!! $isAutofocused() ? 'autofocus' : null !!}
-            {!! $isDisabled() ? 'disabled' : null !!}
-            id="{{ $getId() }}"
-            {!! ($inputMode = $getInputMode()) ? "inputmode=\"{$inputMode}\"" : null !!}
-            {!! $datalistOptions ? "list=\"{$getId()}-list\"" : null !!}
-            {!! ($placeholder = $getPlaceholder()) ? "placeholder=\"{$placeholder}\"" : null !!}
-            {!! ($interval = $getStep()) ? "step=\"{$interval}\"" : null !!}
-            @if (! $isConcealed())
-                {!! filled($length = $getMaxLength()) ? "maxlength=\"{$length}\"" : null !!}
-                {!! filled($value = $getMaxValue()) ? "max=\"{$value}\"" : null !!}
-                {!! filled($length = $getMinLength()) ? "minlength=\"{$length}\"" : null !!}
-                {!! filled($value = $getMinValue()) ? "min=\"{$value}\"" : null !!}
-                {!! $isRequired() ? 'required' : null !!}
-            @endif
-            {{ $getExtraInputAttributeBag()->class([
-                'block w-full transition duration-75 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 disabled:opacity-70',
-                'dark:bg-gray-700 dark:text-white dark:focus:border-primary-500' => config('forms.dark_mode'),
-            ]) }}
-            x-bind:class="{
-                    'border-gray-300': ! (@js($getStatePath()) in $wire.__instance.serverMemo.errors),
-                    'dark:border-gray-600': ! (@js($getStatePath()) in $wire.__instance.serverMemo.errors) && @js(config('forms.dark_mode')),
-                    'border-danger-600 ring-danger-600': (@js($getStatePath()) in $wire.__instance.serverMemo.errors),
-                    'dark:border-danger-400 dark:ring-danger-400': (@js($getStatePath()) in $wire.__instance.serverMemo.errors) && @js(config('forms.dark_mode')),
-                }"
-            />
         </div>
 
         @if ($label = $getSuffixLabel())
