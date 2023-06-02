@@ -20,7 +20,7 @@
         :required="$isRequired()"
         :state-path="$getStatePath()"
 >
-    <div x-data="{characterLimit: {{ $getCharacterLimit() }}, characterCount: {{ mb_strlen($getState()) }}}" {{ $attributes->merge($getExtraAttributes())->class(['filament-forms-text-input-component flex items-center space-x-2 rtl:space-x-reverse group']) }}>
+    <div x-data="{characterLimit: {{ $getCharacterLimit() }}, characterCount: {{ mb_strlen(getState()? $getState()) : '' }}}" {{ $attributes->merge($getExtraAttributes())->class(['filament-forms-text-input-component flex items-center space-x-2 rtl:space-x-reverse group']) }}>
         @if (($prefixAction = $getPrefixAction()) && (! $prefixAction->isHidden()))
             {{ $prefixAction }}
         @endif
