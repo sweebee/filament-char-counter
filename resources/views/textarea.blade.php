@@ -12,7 +12,7 @@
         :state-path="$getStatePath()"
 >
     <div class="relative overflow-hidden"
-         x-data="{characterLimit: {{ $getCharacterLimit() }}, characterCount: {{ mb_strlen($getState() ? getState() : '') }}}">
+         x-data="{characterLimit: {{ $getCharacterLimit() }}, characterCount: {{ mb_strlen($getState() ? $getState() : '') }}}">
         <div class="bg-white dark:bg-gray-700 absolute right-1 rtl:!left-1 rtl:!right-auto px-2 bottom-1 pb-1 text-sm" @if($getCharacterLimit()) :class="{'text-danger-500': characterCount > {{ $getCharacterLimit() }}}" @endif>
             <span x-text="characterCount"></span>@if($getCharacterLimit())/{{ $getCharacterLimit() }}@endif
         </div>
